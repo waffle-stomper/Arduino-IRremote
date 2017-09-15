@@ -37,6 +37,9 @@
 #define DECODE_NEC           1
 #define SEND_NEC             1
 
+#define DECODE_NECX          0 // NOT WRITTEN
+#define SEND_NECX            1
+
 #define DECODE_SONY          1
 #define SEND_SONY            1
 
@@ -119,6 +122,7 @@ typedef
 		DENON,
 		PRONTO,
 		LEGO_PF,
+    NECX,
 	}
 decode_type_t;
 
@@ -198,6 +202,10 @@ class IRrecv
 		//......................................................................
 #		if DECODE_NEC
 			bool  decodeNEC        (decode_results *results) ;
+#		endif
+    //......................................................................
+#		if SEND_NECX
+			void  sendNECX (unsigned long data, int nbits, boolean repeat) ;
 #		endif
 		//......................................................................
 #		if DECODE_SONY
