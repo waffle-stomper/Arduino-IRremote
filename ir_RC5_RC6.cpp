@@ -205,3 +205,55 @@ bool  IRrecv::decodeRC6 (decode_results *results)
 	return true;
 }
 #endif
+
+//+=============================================================================
+// RRRR    CCCC   6666                6666  4   4
+// R   R  C      6                   6      4   4
+// RRRR   C      6666                6666   44444
+// R  R   C      6   6               6   6      4 
+// R   R   CCCC   666    __________   666       4
+//
+// 64 bit RC6
+// NB : Caller needs to take care of flipping the toggle bit
+//
+
+#if SEND_RC6_64
+void  IRsend::sendRC6_64 (unsigned long long data,  int nbits)
+{
+	// Set IR carrier frequency
+	enableIROut(36);
+	
+	//
+	data = data << (64 - nbits);
+
+	// Header
+	mark(RC6_HDR_MARK);
+	space(RC6_HDR_SPACE);
+
+	// Start bit
+	mark(RC6_T1);
+	space(RC6_T1);
+
+	// Data
+	int t;
+	for (int i = 0; i < nbits; i++){
+		if (i == 3) {
+			// double-wide trailer bit
+			t = 2 * RC6_T1;
+		} 
+		else { 
+			t = RC6_T1;
+		}
+		if (data & 0x8000000000000000LL) {
+			mark(t);
+			space(t);
+		} 
+		else {
+			space(t);
+			mark(t);
+		}
+		data <<= 1;
+	}
+	space(0);  // Always end with the LED off
+}
+#endif

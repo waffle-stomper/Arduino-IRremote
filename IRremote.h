@@ -34,6 +34,9 @@
 #define DECODE_RC6           1
 #define SEND_RC6             1
 
+#define DECODE_RC6_64        0 // NOT WRITTEN
+#define SEND_RC6_64          1
+
 #define DECODE_NEC           1
 #define SEND_NEC             1
 
@@ -119,6 +122,7 @@ typedef
 		DENON,
 		PRONTO,
 		LEGO_PF,
+		RC6_64,
 	}
 decode_type_t;
 
@@ -273,6 +277,9 @@ class IRsend
 #		endif
 #		if SEND_RC6
 			void  sendRC6        (unsigned long data,  int nbits) ;
+#		endif
+#		if SEND_RC6_64
+			void  sendRC6_64     (unsigned long long data,  int nbits) ;
 #		endif
 		//......................................................................
 #		if SEND_NEC
